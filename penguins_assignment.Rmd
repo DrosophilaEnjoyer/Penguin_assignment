@@ -1,0 +1,70 @@
+---
+title: "Penguin_assignment"
+output:
+  pdf_document: default
+  html_document: default
+date: "2022-12-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Firstly load all relevent packages and import the data set
+
+```{r}
+install.packages("palmerpenguins")
+
+install.packages("ragg")
+install.packages("svglite")
+library(palmerpenguins)
+library(ggplot2)
+suppressPackageStartupMessages(library(janitor))
+suppressPackageStartupMessages(library(dplyr))
+library(tidyr)
+library(ragg)
+library(svglite)
+
+setwd("C:/Users/Public/Documents/reproducible_data_science")
+write.csv(penguins,(file = "C:/Users/Public/Documents/reproducible_data_science/penguins"))
+
+head(penguins)
+penguins <- read.csv("C:/Users/Public/Documents/reproducible_data_science/penguins")
+```
+
+Now we implement our data cleaning code, this can be done in another R file but in this case im doing it within the same code file
+
+```{r}
+data_cleaning <-  function(data_raw){
+  data_raw %>%
+    clean_names %>%
+    remove_empty(c("rows", "cols")) %>%
+    select(-starts_with("delta")) %>%
+    select(-comments)
+}  
+```
+
+now we remove any bill length NA's
+
+```{r}
+remove_empty_flipper_length <- function(data_clean){
+  data_clean %>%
+    filter(!is.na(flipper_length_mm)) %>%
+    select(species, flipper_length_mm)
+}
+```
+
+Now we run a statistical test, in this case a linear regression to see if body mass correlates with flipper length across each species individually.
+
+```{r}
+mod1 <- lm(body_mass_g ~ flipper_length_mm + species, penguins)
+summary(mod1)
+
+
+plot(body_mass_g ~ flipper_length_mm, data=penguins, col = species)
+  
+
+
+```
+
+from this we can conclude that flipper length dose correlate with body mass with high certainty across all species
