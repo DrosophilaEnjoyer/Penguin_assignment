@@ -63,6 +63,7 @@ summary(mod1)
 
 plot(body_mass_g ~ flipper_length_mm, data=penguins, col = species)
   
+save_plot_png(penguins, "figures/scatter_plot.png", size = 15, res = 600, scaling = 1) #to save it to as a png for later review
 
 
 ```
